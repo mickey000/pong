@@ -2,10 +2,12 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import playgroundActions from 'actions/playground';
+import ballActions from 'actions/ball';
 import leftPlayerActions from 'actions/leftPlayer';
 import rightPlayerActions from 'actions/rightPlayer';
 import Stick from 'components/Stick.react';
 import Ball from 'components/Ball.react';
+import Banner from 'components/Banner.react';
 import key from 'constants/keysMap';
 import directions from 'constants/directions';
 
@@ -60,6 +62,23 @@ class Playground extends Component {
                 e.preventDefault();
                 this.props.setRightMove(directions.DOWN);
                 return;
+            case key.SPACE:
+                e.preventDefault();
+                if (!this.props.round) {
+                    this.props.resetPositions();
+                    this.props.startRound();
+                    this.props.setBallMove();
+
+                    return;
+                }
+
+                if (this.props.round) {
+                    this.props.setPause();
+
+                    return;
+                }
+                
+                return;
             default:
                 return;
         }
@@ -83,13 +102,14 @@ class Playground extends Component {
     }
 
     render() {
-        const { leftPosition, rightPosition, ballPosition } = this.props;
+        const { leftPosition, rightPosition, ballPosition, banner, bannerMessage } = this.props;
 
         return (
             <div className='playground'>
                 <Stick side='left' position={leftPosition} />
                 <Stick side='right' position={rightPosition} />
                 <Ball position={ballPosition} />
+                {banner && <Banner message={bannerMessage}/>}
             </div>
         );
     }
@@ -97,17 +117,24 @@ class Playground extends Component {
 
 export default connect(
     state => {
-        const { leftPlayer, rightPlayer, ball } = state;
+        const { gameState, leftPlayer, rightPlayer, ball } = state;
 
         return {
             leftPosition: leftPlayer.position,
             rightPosition: rightPlayer.position,
             ballPosition: ball.position,
-            shouldUpdatePositions: leftPlayer.moveY || rightPlayer.moveY || ball.moveX || ball.moveY
+            shouldUpdatePositions:
+                (gameState.round && !gameState.pause) &&
+                (leftPlayer.moveY || rightPlayer.moveY || ball.moveX || ball.moveY),
+            banner: gameState.banner,
+            bannerMessage: gameState.bannerMessage,
+            pause: gameState.pause,
+            round: gameState.round
         };
     },
     dispatch => bindActionCreators({
         ...playgroundActions,
+        ...ballActions,
         ...leftPlayerActions,
         ...rightPlayerActions
     }, dispatch)

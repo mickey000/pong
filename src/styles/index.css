@@ -6,6 +6,8 @@ body {
 }
 
 @import 'app.css';
+@import 'header.css';
 @import 'playground.css';
 @import 'stick.css';
 @import 'ball.css';
+@import 'banner.css';

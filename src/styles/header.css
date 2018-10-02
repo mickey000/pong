@@ -1,0 +1,19 @@
+.header {
+    display: flex;
+    flex-flow: row;
+}
+
+.header .section {
+    flex-grow: 1;
+    font-size: 18px;
+    font-weight: bold;
+    color: whitesmoke;
+}
+
+.header .section .line {
+    padding: 2px 0;
+}
+
+.header .section.right {
+    text-align: right;
+}

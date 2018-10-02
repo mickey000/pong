@@ -1,4 +1,4 @@
-import { SET_LEFT_MOVE, SET_LEFT_POSITION } from 'constants/actions';
+import { SET_LEFT_MOVE, SET_LEFT_POSITION, RESET_POSITIONS } from 'constants/actions';
 
 const initState = {
     position: (360 - 40) / 2,
@@ -20,6 +20,9 @@ const leftPlayerReducer = (state = initState, action) => {
             ...state,
             position
         };
+
+    case RESET_POSITIONS:
+        return initState;
 
       default:
         return state;
